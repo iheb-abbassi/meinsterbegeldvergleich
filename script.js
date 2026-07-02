@@ -85,10 +85,6 @@
     var current = root.querySelector('.step-' + stepNumber);
     if (current) current.classList.add('active-step');
 
-    if (current && current.parentElement) {
-      current.parentElement.style.minHeight = current.scrollHeight + 'px';
-    }
-
     progressBar.style.width = (stepNumber * 25) + '%';
 
     if (back2) back2.classList.remove('active-back');
@@ -160,11 +156,6 @@
         setDateFieldError(dateFields[2], true, 'Bitte gib ein gültiges Jahr an.');
         isValid = false;
       }
-    }
-
-    var activeStep = root.querySelector('.step.active-step');
-    if (activeStep && activeStep.parentElement) {
-      activeStep.parentElement.style.minHeight = activeStep.scrollHeight + 'px';
     }
 
     return isValid;
