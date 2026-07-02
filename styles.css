@@ -100,22 +100,15 @@
 }
 
 #sterbegeld-widget .step {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  visibility: hidden;
+  display: none;
   pointer-events: none;
-  transform: translateX(32px);
-  transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
 }
 
 #sterbegeld-widget .step.active-step {
+  display: block;
   position: relative;
   inset: auto;
-  opacity: 1;
-  visibility: visible;
   pointer-events: auto;
-  transform: translateX(0);
   z-index: 2;
 }
 
