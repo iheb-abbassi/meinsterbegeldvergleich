@@ -18,10 +18,11 @@
   --radius: 28px;
   --radius-sm: 18px;
   --widget-fit-width: calc(100vw - 24px);
+  --panel-fixed-height: 760px;
   font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
   color: var(--text);
   width: min(100%, var(--widget-fit-width));
-  max-width: min(720px, var(--widget-fit-width));
+  max-width: min(760px, var(--widget-fit-width));
   min-width: 0;
   margin: 0 auto;
   overflow-x: hidden;
@@ -62,6 +63,8 @@
   box-shadow: var(--shadow);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  height: var(--panel-fixed-height);
+  max-height: var(--panel-fixed-height);
 }
 
 #sterbegeld-widget .cloud {
@@ -93,10 +96,12 @@
 
 #sterbegeld-widget .slides {
   position: relative;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   min-height: 0;
-  overflow: hidden;
-  transition: min-height 0.28s ease;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
 }
 
 #sterbegeld-widget .step {
@@ -127,6 +132,25 @@
   line-height: 1.08;
 }
 
+#sterbegeld-widget .step-2 h2 {
+  font-size: clamp(20px, 2.5vw, 25px);
+  white-space: nowrap;
+}
+
+#sterbegeld-widget .step-4 h2 {
+  text-align: center;
+  white-space: nowrap;
+}
+
+#sterbegeld-widget .step-4 .hero {
+  max-width: 100%;
+  text-align: center;
+}
+
+#sterbegeld-widget .step-2 .hero {
+  max-width: 100%;
+}
+
 #sterbegeld-widget .hero p,
 #sterbegeld-widget .note,
 #sterbegeld-widget .subtext,
@@ -148,19 +172,34 @@
   line-height: 1.35;
 }
 
+#sterbegeld-widget .step-2 .two-line-copy {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  font-size: 12px;
+  text-align: center;
+}
+
+#sterbegeld-widget .step-2 .two-line-copy span {
+  display: block;
+  text-align: center;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
 #sterbegeld-widget .grid-2 {
   max-width: 700px;
-  margin: 24px auto 18px;
+  margin: 24px auto 16px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 12px;
 }
 
 #sterbegeld-widget .stack {
   max-width: 700px;
-  margin: 28px auto 18px;
+  margin: 24px auto 16px;
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 #sterbegeld-widget .card {
@@ -187,10 +226,10 @@
 }
 
 #sterbegeld-widget .person-card {
-  min-height: 92px;
+  min-height: 108px;
   padding: 16px 20px;
   display: grid;
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 84px 1fr;
   align-items: center;
   gap: 12px;
   text-align: left;
@@ -210,8 +249,8 @@
 }
 
 #sterbegeld-widget .money-card {
-  min-height: 118px;
-  padding: 18px 20px;
+  min-height: 108px;
+  padding: 16px 20px;
   display: grid;
   grid-template-columns: 84px 1fr;
   align-items: center;
@@ -421,10 +460,22 @@
   background: rgba(255, 255, 255, 0.55);
 }
 
+#sterbegeld-widget .summary-copy {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
 #sterbegeld-widget .summary strong {
-  display: block;
-  margin-bottom: 4px;
+  flex: 0 0 auto;
+  margin-bottom: 0;
   font-size: 18px;
+}
+
+#sterbegeld-widget .summary .subtext {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 #sterbegeld-widget .features {
@@ -456,6 +507,7 @@
 
 #sterbegeld-widget .footer {
   display: flex;
+  flex: 0 0 auto;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
@@ -507,6 +559,10 @@
   overflow-wrap: anywhere;
 }
 
+#sterbegeld-widget .mark span {
+  display: block;
+}
+
 #sterbegeld-widget .mark-icon {
   width: 48px;
   height: 48px;
@@ -533,6 +589,8 @@
   margin: 16px auto 0;
   text-align: left;
   cursor: pointer;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 #sterbegeld-widget .legal-consent input[type="checkbox"] {
@@ -630,23 +688,14 @@
   color: rgba(53, 78, 120, 0.82);
 }
 
-#sterbegeld-widget[data-current-step="3"] .panel {
-  min-height: auto;
-  max-width: 100%;
-  min-width: 0;
-}
-
 #sterbegeld-widget[data-current-step="3"] .widget-shell {
   width: calc(100% - 16px);
   margin-inline: auto;
 }
 
 #sterbegeld-widget[data-current-step="3"] .slides {
-  flex: 0 0 auto;
-  min-height: 0 !important;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
 }
 
 #sterbegeld-widget[data-current-step="3"] .step-3.active-step {
@@ -741,6 +790,18 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    min-height: auto;
+    height: auto;
+    max-height: none;
+  }
+
+  #sterbegeld-widget .slides {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  #sterbegeld-widget .step.active-step {
+    min-height: 0;
   }
 
   #sterbegeld-widget .date-grid,
@@ -751,6 +812,20 @@
 
   #sterbegeld-widget h2 {
     font-size: 28px;
+  }
+
+  #sterbegeld-widget .step-2 h2 {
+    white-space: normal;
+  }
+
+  #sterbegeld-widget .step-4 h2 {
+    white-space: normal;
+  }
+
+  #sterbegeld-widget .two-line-copy span {
+    display: inline;
+    text-align: center;
+    white-space: normal;
   }
 
   #sterbegeld-widget .footer {
