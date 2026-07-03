@@ -1,9 +1,9 @@
-# Version 2 - Backend Service Version
+# Version 2 - Hybrid Backend Service Version
 
-This is the current safer setup.
+This is the hybrid safer setup.
 
-- `index.html`, `styles.css`, `script.js`, and `api/lead.js` are hosted on Vercel.
+- Vercel hosts the backend API in `api/lead.js`.
 - IONOS should use `ionos-widget/widget.html`.
+- The IONOS widget has inline HTML, CSS, and frontend JavaScript for smoother loading.
 - Form submissions go to the Vercel backend first, then EmailJS sends the emails.
-- Images are stored in `images/` and referenced through GitHub raw URLs.
-
+- Compact icons are stored in `icon-images/` and referenced through GitHub raw URLs.

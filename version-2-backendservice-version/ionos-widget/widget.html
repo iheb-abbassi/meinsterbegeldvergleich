@@ -1,4 +1,835 @@
-<link rel="stylesheet" href="https://meinsterbegeldvergleich.vercel.app/styles.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+#sterbegeld-widget {
+  --bg1: #eaf3ff;
+  --bg2: #fff9c2;
+  --panel: rgba(255, 255, 255, 0.76);
+  --line: rgba(53, 78, 120, 0.24);
+  --text: #354E78;
+  --muted: rgba(53, 78, 120, 0.76);
+  --blue: #0071FF;
+  --blue-strong: #005fd6;
+  --yellow: #FFEA00;
+  --yellow-strong: #ffe100;
+  --pink: #0071FF;
+  --pink-strong: #005fd6;
+  --green: #FFEA00;
+  --shadow: 0 22px 50px rgba(53, 78, 120, 0.16);
+  --radius: 28px;
+  --radius-sm: 18px;
+  --widget-fit-width: calc(100vw - 24px);
+  font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  width: min(100%, var(--widget-fit-width));
+  max-width: min(720px, var(--widget-fit-width));
+  min-width: 0;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+#sterbegeld-widget * {
+  box-sizing: border-box;
+}
+
+#sterbegeld-widget .view-anchor {
+  display: block;
+  position: relative;
+  top: -8px;
+  height: 0;
+  visibility: hidden;
+}
+
+#sterbegeld-widget .widget-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px;
+  padding: 10px;
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255,255,255,0.4), transparent 16%),
+    radial-gradient(circle at 78% 22%, rgba(255, 234, 0, 0.22), transparent 18%),
+    linear-gradient(180deg, rgba(234, 243, 255, 0.96), rgba(255, 249, 194, 0.84));
+}
+
+#sterbegeld-widget .panel {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 18px 16px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+#sterbegeld-widget .cloud {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 35% 26%, rgba(255,255,255,0.42), transparent 18%),
+    radial-gradient(circle at 55% 30%, rgba(255, 234, 0, 0.16), transparent 22%),
+    linear-gradient(180deg, transparent 65%, rgba(255,255,255,0.22));
+}
+
+#sterbegeld-widget .progress {
+  height: 7px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(53, 78, 120, 0.16);
+  margin-bottom: 18px;
+}
+
+#sterbegeld-widget .progress-bar {
+  height: 100%;
+  width: 25%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--text));
+  transition: width 0.25s ease;
+}
+
+#sterbegeld-widget .slides {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow: hidden;
+  transition: min-height 0.28s ease;
+}
+
+#sterbegeld-widget .step {
+  display: none;
+  pointer-events: none;
+}
+
+#sterbegeld-widget .step.active-step {
+  display: block;
+  position: relative;
+  inset: auto;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+#sterbegeld-widget .hero {
+  max-width: 560px;
+  margin: 0 auto 12px;
+  text-align: center;
+}
+
+#sterbegeld-widget h2 {
+  margin: 0 0 14px;
+  color: var(--text);
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(22px, 2.8vw, 28px);
+  line-height: 1.08;
+}
+
+#sterbegeld-widget .hero p,
+#sterbegeld-widget .note,
+#sterbegeld-widget .subtext,
+#sterbegeld-widget .legal,
+#sterbegeld-widget .fineprint,
+#sterbegeld-widget .mark span {
+  color: var(--muted);
+}
+
+#sterbegeld-widget .hero p,
+#sterbegeld-widget .label,
+#sterbegeld-widget .legal {
+  color: var(--text);
+}
+
+#sterbegeld-widget .hero p {
+  margin: 0;
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 1.35;
+}
+
+#sterbegeld-widget .grid-2 {
+  max-width: 700px;
+  margin: 24px auto 18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+#sterbegeld-widget .stack {
+  max-width: 700px;
+  margin: 28px auto 18px;
+  display: grid;
+  gap: 14px;
+}
+
+#sterbegeld-widget .card {
+  position: relative;
+  border: 1.5px solid rgba(53, 78, 120, 0.26);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.52);
+  color: var(--text);
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+
+#sterbegeld-widget .card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 113, 255, 0.46);
+}
+
+#sterbegeld-widget .card.selected {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: var(--green);
+  box-shadow: 0 14px 28px rgba(53, 78, 120, 0.12);
+}
+
+#sterbegeld-widget .person-card {
+  min-height: 92px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+#sterbegeld-widget .option-picture {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 8px 18px rgba(53, 78, 120, 0.16);
+}
+
+#sterbegeld-widget .money-card {
+  min-height: 118px;
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+#sterbegeld-widget .title {
+  font-size: clamp(15px, 1.7vw, 18px);
+  font-weight: 700;
+  color: var(--text);
+}
+
+#sterbegeld-widget .small {
+  margin-top: 6px;
+  font-size: 15px;
+  color: rgba(53, 78, 120, 0.68);
+}
+
+#sterbegeld-widget .check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--green);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#sterbegeld-widget .card.selected .check {
+  display: flex;
+}
+
+#sterbegeld-widget .icon {
+  width: 52px;
+  height: 52px;
+}
+
+#sterbegeld-widget .blue {
+  stroke: var(--text);
+}
+
+#sterbegeld-widget .yellow {
+  stroke: var(--blue);
+}
+
+#sterbegeld-widget .date-block,
+#sterbegeld-widget .contact-block {
+  max-width: 640px;
+  margin: 18px auto 0;
+}
+
+#sterbegeld-widget .label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+#sterbegeld-widget .date-grid,
+#sterbegeld-widget .contact-grid {
+  display: grid;
+  gap: 12px 14px;
+}
+
+#sterbegeld-widget .date-grid {
+  max-width: 438px;
+  margin: 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+#sterbegeld-widget .contact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+#sterbegeld-widget .dual {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+}
+
+#sterbegeld-widget .full {
+  grid-column: 1 / -1;
+}
+
+#sterbegeld-widget input,
+#sterbegeld-widget select,
+#sterbegeld-widget button {
+  font: inherit;
+}
+
+#sterbegeld-widget input,
+#sterbegeld-widget select {
+  width: 100%;
+  height: 40px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(53, 78, 120, 0.2);
+  background-color: rgba(255, 255, 255, 0.42);
+  color: var(--text);
+  padding: 0 12px;
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.58) inset;
+}
+
+#sterbegeld-widget input::placeholder {
+  color: rgba(53, 78, 120, 0.58);
+}
+
+#sterbegeld-widget input:focus,
+#sterbegeld-widget select:focus {
+  border-color: rgba(0, 113, 255, 0.82);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 3px rgba(0, 113, 255, 0.12);
+}
+
+#sterbegeld-widget input.is-invalid {
+  border-color: #b00000;
+  box-shadow: 0 2px 0 #b00000;
+}
+
+#sterbegeld-widget .field-errors {
+  display: grid;
+  gap: 8px;
+  max-width: 438px;
+  margin: 12px auto 0;
+  text-align: left;
+}
+
+#sterbegeld-widget .field-error {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  color: #b00000;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+#sterbegeld-widget .field-error.active-error {
+  display: flex;
+}
+
+#sterbegeld-widget .error-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: #b00000;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#sterbegeld-widget .cta-row {
+  text-align: center;
+  margin-top: 24px;
+}
+
+#sterbegeld-widget .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 146px;
+  height: 60px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--blue), var(--blue-strong));
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 14px 30px rgba(0, 113, 255, 0.24);
+  text-decoration: none;
+}
+
+#sterbegeld-widget .btn:hover {
+  transform: translateY(-1px);
+}
+
+#sterbegeld-widget .btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+#sterbegeld-widget .summary {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 14px;
+  align-items: center;
+  margin: 22px auto 0;
+  max-width: 560px;
+  padding: 16px 18px;
+  border: 1px solid rgba(53, 78, 120, 0.28);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+#sterbegeld-widget .summary strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 18px;
+}
+
+#sterbegeld-widget .features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 26px;
+  margin: 22px 0 10px;
+  font-weight: 700;
+}
+
+#sterbegeld-widget .feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#sterbegeld-widget .feature-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 234, 0, 0.24);
+  border: 1px solid rgba(53, 78, 120, 0.18);
+  color: var(--text);
+}
+
+#sterbegeld-widget .footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+#sterbegeld-widget .back {
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 700;
+}
+
+#sterbegeld-widget .back-nav {
+  display: none;
+  cursor: pointer;
+}
+
+#sterbegeld-widget .back-nav.active-back {
+  display: inline-block;
+}
+
+#sterbegeld-widget .marks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 18px 24px;
+  margin-left: auto;
+  width: min(100%, 560px);
+  max-width: 100%;
+}
+
+#sterbegeld-widget .mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+#sterbegeld-widget .mark div {
+  min-width: 0;
+}
+
+#sterbegeld-widget .mark strong,
+#sterbegeld-widget .mark span {
+  overflow-wrap: anywhere;
+}
+
+#sterbegeld-widget .mark-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--text);
+}
+
+#sterbegeld-widget .legal,
+#sterbegeld-widget .fineprint,
+#sterbegeld-widget .note {
+  line-height: 1.6;
+  font-size: 15px;
+  text-align: center;
+}
+
+#sterbegeld-widget .legal {
+  margin-top: 16px;
+}
+
+#sterbegeld-widget .legal-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 640px;
+  margin: 16px auto 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+#sterbegeld-widget .legal-consent input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  margin: 4px 0 0;
+  padding: 0;
+  accent-color: var(--blue);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+#sterbegeld-widget .legal-consent input[type="checkbox"].is-invalid {
+  outline: 2px solid #b00000;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+#sterbegeld-widget .consent-error {
+  display: none;
+  max-width: 640px;
+  margin: 8px auto 0;
+  color: #b00000;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
+}
+
+#sterbegeld-widget .consent-error.active-error {
+  display: block;
+}
+
+#sterbegeld-widget .fineprint {
+  margin-top: 10px;
+}
+
+#sterbegeld-widget .date-step,
+#sterbegeld-widget .step-3 {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#sterbegeld-widget .date-step .hero,
+#sterbegeld-widget .step-3 .hero {
+  max-width: 980px;
+  margin: 0 auto 16px;
+}
+
+#sterbegeld-widget .date-step h2,
+#sterbegeld-widget .step-3 h2 {
+  font-size: clamp(30px, 3.2vw, 36px);
+  line-height: 1.18;
+  margin-bottom: 14px;
+}
+
+#sterbegeld-widget .date-step .hero p,
+#sterbegeld-widget .step-3 .hero p {
+  max-width: 920px;
+  margin: 0 auto;
+  font-size: clamp(18px, 1.8vw, 22px);
+  line-height: 1.28;
+}
+
+#sterbegeld-widget .date-step .date-block,
+#sterbegeld-widget .step-3 .date-block {
+  margin-top: 20px;
+}
+
+#sterbegeld-widget .date-step .label,
+#sterbegeld-widget .step-3 .label {
+  width: 438px;
+  max-width: 100%;
+  margin: 0 auto 8px;
+  text-align: left;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+#sterbegeld-widget .date-step input,
+#sterbegeld-widget .step-3 input {
+  height: 48px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(53, 78, 120, 0.32);
+  font-size: 17px;
+}
+
+#sterbegeld-widget .date-step .note,
+#sterbegeld-widget .step-3 .note {
+  margin-top: 24px;
+  font-size: 16px;
+  color: rgba(53, 78, 120, 0.82);
+}
+
+#sterbegeld-widget[data-current-step="3"] .panel {
+  min-height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+#sterbegeld-widget[data-current-step="3"] .widget-shell {
+  width: calc(100% - 16px);
+  margin-inline: auto;
+}
+
+#sterbegeld-widget[data-current-step="3"] .slides {
+  flex: 0 0 auto;
+  min-height: 0 !important;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+#sterbegeld-widget[data-current-step="3"] .step-3.active-step {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+#sterbegeld-widget[data-current-step="3"] .step-3 .hero {
+  max-width: 100%;
+}
+
+#sterbegeld-widget[data-current-step="3"] .step-3 h2 {
+  font-size: clamp(24px, 5vw, 32px);
+  overflow-wrap: normal;
+}
+
+#sterbegeld-widget[data-current-step="3"] .step-3 .hero p {
+  max-width: 100%;
+  font-size: clamp(16px, 3.6vw, 20px);
+}
+
+#sterbegeld-widget[data-current-step="3"] .date-grid {
+  width: min(100%, 438px);
+  max-width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(4px, 1.4vw, 8px);
+}
+
+#sterbegeld-widget[data-current-step="3"] input {
+  min-width: 0;
+  padding-inline: clamp(6px, 2vw, 12px);
+  font-size: clamp(14px, 3.8vw, 17px);
+}
+
+#sterbegeld-widget[data-current-step="3"] .note {
+  max-width: 100%;
+  overflow-wrap: normal;
+}
+
+#sterbegeld-widget .form-message {
+  display: none;
+  max-width: 640px;
+  margin: 18px auto 0;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+#sterbegeld-widget .form-message.success {
+  display: block;
+  color: #1f6b3a;
+  background: rgba(31, 107, 58, 0.1);
+  border: 1px solid rgba(31, 107, 58, 0.3);
+}
+
+#sterbegeld-widget .form-message.error {
+  display: block;
+  color: #b00000;
+  background: rgba(176, 0, 0, 0.08);
+  border: 1px solid rgba(176, 0, 0, 0.28);
+}
+
+#sterbegeld-widget .honeypot {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  #sterbegeld-widget .grid-2,
+  #sterbegeld-widget .contact-grid,
+  #sterbegeld-widget .dual {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  #sterbegeld-widget .widget-shell {
+    padding: 10px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #sterbegeld-widget .panel {
+    padding: 18px 14px 18px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  #sterbegeld-widget .date-grid,
+  #sterbegeld-widget .money-card,
+  #sterbegeld-widget .summary {
+    grid-template-columns: 1fr;
+  }
+
+  #sterbegeld-widget h2 {
+    font-size: 28px;
+  }
+
+  #sterbegeld-widget .footer {
+    justify-content: center;
+  }
+
+  #sterbegeld-widget .marks {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+
+  #sterbegeld-widget .mark {
+    white-space: normal;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .date-grid {
+    width: 100%;
+    max-width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] h2 {
+    font-size: clamp(24px, 7vw, 28px);
+    overflow-wrap: anywhere;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] input {
+    min-width: 0;
+    padding: 0 10px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .date-block {
+    margin-top: 14px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .marks {
+    width: calc(100% - 12px);
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .cta-row {
+    margin-top: 18px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .note {
+    margin-top: 14px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .footer {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  #sterbegeld-widget {
+    width: min(100%, calc(100vw - 12px));
+    max-width: calc(100vw - 12px);
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .widget-shell {
+    width: calc(100% - 20px);
+    padding: 8px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .panel {
+    padding: 16px 12px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] .date-grid {
+    gap: 4px;
+  }
+
+  #sterbegeld-widget[data-current-step="3"] input {
+    padding: 0 8px;
+  }
+}
+
+</style>
 
 <div id="sterbegeld-widget">
   <input type="hidden" id="sg-utm-source">
@@ -35,25 +866,25 @@
           <div class="grid-2">
             <a class="card person-card" href="#sg-view-2">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Bild%20Mutter%20mit%20Kind.jpg" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Bild-Mutter-mit-Kind.jpg" alt="">
               <div class="title">Meine Kinder</div>
             </a>
 
             <a class="card person-card" href="#sg-view-2">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Frau%20mit%20Partner.png" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Frau-mit-Partner.jpg" alt="">
               <div class="title">Mein Partner</div>
             </a>
 
             <a class="card person-card" href="#sg-view-2">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Mann%20alleine.jpg" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Mann-alleine.jpg" alt="">
               <div class="title">Andere</div>
             </a>
 
             <a class="card person-card" href="#sg-view-2">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Frau%20alleine.png" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Frau-alleine.jpg" alt="">
               <div class="title">Ich selbst</div>
               <div class="small">z. B. für Eltern</div>
             </a>
@@ -69,7 +900,7 @@
           <div class="stack">
             <a class="card money-card" href="#sg-view-3">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Bild%20eine%20Kerze.png" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Bild-eine-Kerze.jpg" alt="">
               <div>
                 <div class="title">Bis 6.000 €</div>
                 <div class="small">Im engen Familienkreis</div>
@@ -78,7 +909,7 @@
 
             <a class="card money-card" href="#sg-view-3">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Bild%20zwei%20Kerzen.png" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Bild-zwei-Kerzen.jpg" alt="">
               <div>
                 <div class="title">Bis 8.000 €</div>
                 <div class="small">Mit traditioneller Trauerfeier</div>
@@ -87,7 +918,7 @@
 
             <a class="card money-card" href="#sg-view-3">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Drei%20Kerzen.png" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Drei-Kerzen.jpg" alt="">
               <div>
                 <div class="title">Ab 10.000 €</div>
                 <div class="small">In gehobener Ausführung</div>
@@ -96,7 +927,7 @@
 
             <a class="card money-card" href="#sg-view-3">
               <span class="check">✓</span>
-              <img class="option-picture" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/images/Kerze%20mit%20Fragezeichen.png" alt="">
+              <img class="option-picture" width="44" height="44" src="https://raw.githubusercontent.com/iheb-abbassi/testify/main/version-2-backendservice-version/icon-images/Kerze-mit-Fragezeichen.jpg" alt="">
               <div>
                 <div class="title">Weiß ich nicht</div>
                 <div class="small">Lass dich individuell beraten</div>
@@ -237,4 +1068,429 @@
   </div>
 </div>
 <script>window.STERBEGELD_API_URL = "https://meinsterbegeldvergleich.vercel.app/api/lead";</script>
-<script src="https://meinsterbegeldvergleich.vercel.app/script.js" defer></script>
+<script>
+(function () {
+  var root = document.getElementById('sterbegeld-widget');
+  if (!root) return;
+
+  function syncWidgetFitWidth() {
+    var availableWidth = window.innerWidth || document.documentElement.clientWidth || 720;
+    var node = root.parentElement;
+
+    while (node && node !== document.documentElement) {
+      var rect = node.getBoundingClientRect();
+      if (rect.width > 0) {
+        availableWidth = Math.min(availableWidth, rect.width);
+      }
+      node = node.parentElement;
+    }
+
+    root.style.setProperty('--widget-fit-width', Math.max(280, Math.floor(availableWidth - 24)) + 'px');
+  }
+
+  var steps = root.querySelectorAll('.step');
+  var progressBar = root.querySelector('.progress-bar');
+  var back2 = root.querySelector('.back-2');
+  var back3 = root.querySelector('.back-3');
+  var back4 = root.querySelector('.back-4');
+  var recipientSummary = root.querySelector('#sg-recipient');
+  var coverageSummary = root.querySelector('#sg-coverage');
+  var submitBtn = root.querySelector('#sg-submit');
+  var messageBox = root.querySelector('#sg-message');
+
+  var dateFields = [
+    {
+      input: root.querySelector('#sg-day'),
+      error: root.querySelector('#sg-day-error'),
+      emptyMessage: 'Bitte gib einen Tag an.',
+      invalidMessage: 'Bitte gib einen gültigen Tag an.'
+    },
+    {
+      input: root.querySelector('#sg-month'),
+      error: root.querySelector('#sg-month-error'),
+      emptyMessage: 'Bitte gib einen Monat an.',
+      invalidMessage: 'Bitte gib einen gültigen Monat an.'
+    },
+    {
+      input: root.querySelector('#sg-year'),
+      error: root.querySelector('#sg-year-error'),
+      emptyMessage: 'Bitte gib ein Jahr an.',
+      invalidMessage: 'Bitte gib ein gültiges Jahr an.'
+    }
+  ];
+
+  function fillTrackingFields() {
+    var params = new URLSearchParams(window.location.search);
+
+    root.querySelector('#sg-utm-source').value = params.get('utm_source') || 'direkt';
+    root.querySelector('#sg-utm-medium').value = params.get('utm_medium') || 'direkt';
+    root.querySelector('#sg-utm-campaign').value = params.get('utm_campaign') || 'direkt';
+    root.querySelector('#sg-utm-term').value = params.get('utm_term') || '';
+    root.querySelector('#sg-utm-content').value = params.get('utm_content') || '';
+    root.querySelector('#sg-utm-source-platform').value = params.get('utm_source_platform') || '';
+    root.querySelector('#sg-gclid').value = params.get('gclid') || '';
+    root.querySelector('#sg-fbclid').value = params.get('fbclid') || '';
+  }
+
+  function showMessage(type, text) {
+    if (!messageBox) return;
+
+    messageBox.className = 'form-message ' + type;
+    messageBox.textContent = text;
+  }
+
+  function clearMessage() {
+    if (!messageBox) return;
+
+    messageBox.className = 'form-message';
+    messageBox.textContent = '';
+  }
+
+  function showStep(stepNumber) {
+    root.setAttribute('data-current-step', String(stepNumber));
+
+    for (var i = 0; i < steps.length; i++) {
+      steps[i].classList.remove('active-step');
+    }
+
+    var current = root.querySelector('.step-' + stepNumber);
+    if (current) current.classList.add('active-step');
+
+    progressBar.style.width = (stepNumber * 25) + '%';
+
+    if (back2) back2.classList.remove('active-back');
+    if (back3) back3.classList.remove('active-back');
+    if (back4) back4.classList.remove('active-back');
+
+    if (stepNumber === 2 && back2) back2.classList.add('active-back');
+    if (stepNumber === 3 && back3) back3.classList.add('active-back');
+    if (stepNumber === 4 && back4) back4.classList.add('active-back');
+  }
+
+  function setDateFieldError(field, hasError, message) {
+    if (!field.input || !field.error) return;
+
+    var messageTarget = field.error.querySelector('span:last-child');
+    if (messageTarget && message) messageTarget.textContent = message;
+
+    field.input.classList.toggle('is-invalid', hasError);
+    field.input.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+    field.error.classList.toggle('active-error', hasError);
+  }
+
+  function validateDateFields() {
+    var isValid = true;
+    var values = [];
+
+    for (var i = 0; i < dateFields.length; i++) {
+      var field = dateFields[i];
+      var value = field.input ? field.input.value.trim() : '';
+      values.push(value);
+
+      if (value === '') {
+        setDateFieldError(field, true, field.emptyMessage);
+        isValid = false;
+      } else if (!/^\d+$/.test(value)) {
+        setDateFieldError(field, true, field.invalidMessage);
+        isValid = false;
+      } else {
+        setDateFieldError(field, false);
+      }
+    }
+
+    if (isValid) {
+      var day = Number(values[0]);
+      var month = Number(values[1]);
+      var year = Number(values[2]);
+      var currentYear = new Date().getFullYear();
+      var date = new Date(year, month - 1, day);
+
+      var hasValidDay = day >= 1 && day <= 31;
+      var hasValidMonth = month >= 1 && month <= 12;
+      var hasValidYear = values[2].length === 4 && year >= 1900 && year <= currentYear;
+      var isRealDate =
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day;
+
+      if (!hasValidDay || (hasValidMonth && hasValidYear && !isRealDate)) {
+        setDateFieldError(dateFields[0], true, 'Bitte gib einen gültigen Tag an.');
+        isValid = false;
+      }
+
+      if (!hasValidMonth) {
+        setDateFieldError(dateFields[1], true, 'Bitte gib einen gültigen Monat an.');
+        isValid = false;
+      }
+
+      if (!hasValidYear) {
+        setDateFieldError(dateFields[2], true, 'Bitte gib ein gültiges Jahr an.');
+        isValid = false;
+      }
+    }
+
+    return isValid;
+  }
+
+  function bindDateFieldCleanup() {
+    for (var i = 0; i < dateFields.length; i++) {
+      if (dateFields[i].input) {
+        dateFields[i].input.addEventListener('input', function (event) {
+          event.target.value = event.target.value.replace(/\D/g, '');
+
+          var field = null;
+          for (var j = 0; j < dateFields.length; j++) {
+            if (dateFields[j].input === event.target) {
+              field = dateFields[j];
+              break;
+            }
+          }
+
+          if (field && event.target.value.trim() !== '') {
+            setDateFieldError(field, false);
+          }
+        });
+      }
+    }
+  }
+
+  function bindChoiceLinks(selector, targetStep, summaryElement) {
+    var links = root.querySelectorAll(selector);
+
+    for (var i = 0; i < links.length; i++) {
+      links[i].addEventListener('click', function (event) {
+        event.preventDefault();
+
+        for (var j = 0; j < links.length; j++) {
+          links[j].classList.remove('selected');
+        }
+
+        event.currentTarget.classList.add('selected');
+
+        var title = event.currentTarget.querySelector('.title');
+        if (summaryElement && title) {
+          summaryElement.textContent = title.textContent.trim();
+        }
+
+        showStep(targetStep);
+      });
+    }
+  }
+
+  function setInputInvalid(input, isInvalid) {
+    if (!input) return;
+    input.classList.toggle('is-invalid', isInvalid);
+  }
+
+  function setConsentInvalid(isInvalid) {
+    var consent = root.querySelector('#sg-consent');
+    var consentError = root.querySelector('#sg-consent-error');
+
+    if (consent) {
+      consent.classList.toggle('is-invalid', isInvalid);
+      consent.setAttribute('aria-invalid', isInvalid ? 'true' : 'false');
+    }
+
+    if (consentError) {
+      consentError.classList.toggle('active-error', isInvalid);
+    }
+  }
+
+  function validateConsent() {
+    var consent = root.querySelector('#sg-consent');
+    var isValid = !!(consent && consent.checked);
+
+    setConsentInvalid(!isValid);
+    return isValid;
+  }
+
+  function bindConsentCleanup() {
+    var consent = root.querySelector('#sg-consent');
+    if (!consent) return;
+
+    consent.addEventListener('change', function () {
+      if (consent.checked) {
+        setConsentInvalid(false);
+      }
+    });
+  }
+
+  function validateContactFields() {
+    var vorname = root.querySelector('#sg-vorname');
+    var nachname = root.querySelector('#sg-nachname');
+    var strasse = root.querySelector('#sg-strasse');
+    var plz = root.querySelector('#sg-plz');
+    var ort = root.querySelector('#sg-ort');
+    var telefon = root.querySelector('#sg-telefon');
+    var email = root.querySelector('#sg-email');
+
+    var emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+    var phoneValid = telefon.value.replace(/\D/g, '').length >= 6;
+    var plzValid = /^\d{5}$/.test(plz.value.trim());
+
+    setInputInvalid(vorname, vorname.value.trim() === '');
+    setInputInvalid(nachname, nachname.value.trim() === '');
+    setInputInvalid(strasse, strasse.value.trim() === '');
+    setInputInvalid(plz, !plzValid);
+    setInputInvalid(ort, ort.value.trim() === '');
+    setInputInvalid(telefon, !phoneValid);
+    setInputInvalid(email, !emailValid);
+
+    return (
+      vorname.value.trim() !== '' &&
+      nachname.value.trim() !== '' &&
+      strasse.value.trim() !== '' &&
+      plzValid &&
+      ort.value.trim() !== '' &&
+      phoneValid &&
+      emailValid
+    );
+  }
+
+  function buildEmailParams() {
+    var day = root.querySelector('#sg-day').value.trim().padStart(2, '0');
+    var month = root.querySelector('#sg-month').value.trim().padStart(2, '0');
+    var year = root.querySelector('#sg-year').value.trim();
+
+    var vorname = root.querySelector('#sg-vorname').value.trim();
+    var nachname = root.querySelector('#sg-nachname').value.trim();
+    var email = root.querySelector('#sg-email').value.trim();
+
+    return {
+      sterbegeld_empfaenger: recipientSummary.textContent.trim(),
+      sterbegeld_summe: coverageSummary.textContent.trim(),
+
+      vorname: vorname,
+      name: nachname,
+      telefonnummer: root.querySelector('#sg-telefon').value.trim(),
+      strasse_hausnummer: root.querySelector('#sg-strasse').value.trim(),
+      postleitzahl: root.querySelector('#sg-plz').value.trim(),
+      ort: root.querySelector('#sg-ort').value.trim(),
+      geburtsdatum: day + '.' + month + '.' + year,
+      email: email,
+
+      to_email: email,
+      to_name: vorname + ' ' + nachname,
+
+      utm_source: root.querySelector('#sg-utm-source').value,
+      utm_medium: root.querySelector('#sg-utm-medium').value,
+      utm_campaign: root.querySelector('#sg-utm-campaign').value,
+      utm_term: root.querySelector('#sg-utm-term').value,
+      utm_content: root.querySelector('#sg-utm-content').value,
+      utm_platform: root.querySelector('#sg-utm-source-platform').value,
+      gclid: root.querySelector('#sg-gclid').value,
+      fbclid: root.querySelector('#sg-fbclid').value,
+
+      website: root.querySelector('#sg-website').value.trim(),
+      page_url: window.location.href,
+      consent_accepted: 'ja',
+      consent_timestamp: new Date().toISOString(),
+      consent_text_version: 'bestattungsvorsorge_multistep_v1'
+    };
+  }
+
+  function bindSubmit() {
+    if (!submitBtn) return;
+
+    submitBtn.addEventListener('click', function () {
+      clearMessage();
+
+      var honeypot = root.querySelector('#sg-website');
+      if (honeypot && honeypot.value.trim() !== '') {
+        return;
+      }
+
+      var dateValid = validateDateFields();
+      var contactValid = validateContactFields();
+      var consentValid = validateConsent();
+
+      if (!dateValid || !contactValid || !consentValid) {
+        showMessage('error', 'Bitte füllen Sie alle Pflichtfelder korrekt aus.');
+        return;
+      }
+
+      var params = buildEmailParams();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet...';
+
+      var apiUrl = window.STERBEGELD_API_URL || '/api/lead';
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('Submission failed');
+          }
+
+          return response.json();
+        })
+        .then(function () {
+          submitBtn.textContent = 'Erfolgreich gesendet ✓';
+          showMessage('success', 'Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet.');
+        })
+        .catch(function (error) {
+          console.error('EmailJS Fehler:', error);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Jetzt Angebot anfordern';
+          showMessage('error', 'Fehler beim Senden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.');
+        });
+    });
+  }
+
+  bindChoiceLinks('a.person-card[href="#sg-view-2"]', 2, recipientSummary);
+  bindChoiceLinks('a.money-card[href="#sg-view-3"]', 3, coverageSummary);
+
+  var dateNextLinks = root.querySelectorAll('a[href="#sg-view-4"]');
+  for (var i = 0; i < dateNextLinks.length; i++) {
+    dateNextLinks[i].addEventListener('click', function (event) {
+      event.preventDefault();
+
+      if (validateDateFields()) {
+        showStep(4);
+      }
+    });
+  }
+
+  if (back2) {
+    back2.addEventListener('click', function (event) {
+      event.preventDefault();
+      showStep(1);
+    });
+  }
+
+  if (back3) {
+    back3.addEventListener('click', function (event) {
+      event.preventDefault();
+      showStep(2);
+    });
+  }
+
+  if (back4) {
+    back4.addEventListener('click', function (event) {
+      event.preventDefault();
+      showStep(3);
+    });
+  }
+
+  fillTrackingFields();
+  syncWidgetFitWidth();
+  window.addEventListener('resize', syncWidgetFitWidth);
+  window.addEventListener('orientationchange', syncWidgetFitWidth);
+
+  if (window.ResizeObserver && root.parentElement) {
+    new ResizeObserver(syncWidgetFitWidth).observe(root.parentElement);
+  }
+
+  bindDateFieldCleanup();
+  bindConsentCleanup();
+  bindSubmit();
+  showStep(1);
+})();
+
+</script>
