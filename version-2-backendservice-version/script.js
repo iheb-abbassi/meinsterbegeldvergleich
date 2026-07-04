@@ -360,13 +360,20 @@
           return response.json();
         })
         .then(function () {
-          submitBtn.textContent = 'Erfolgreich gesendet ✓';
+          var submitRow = submitBtn.closest('.cta-row');
+          if (submitRow) {
+            submitRow.style.display = 'none';
+          }
+
           showMessage('success', 'Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet.');
         })
         .catch(function (error) {
           console.error('EmailJS Fehler:', error);
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Jetzt Angebot anfordern';
+          var submitRow = submitBtn.closest('.cta-row');
+          if (submitRow) {
+            submitRow.style.display = 'none';
+          }
+
           showMessage('error', 'Fehler beim Senden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.');
         });
     });

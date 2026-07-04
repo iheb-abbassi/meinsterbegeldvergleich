@@ -713,8 +713,8 @@
 #sterbegeld-widget .form-message {
   display: none;
   max-width: 640px;
-  margin: 18px auto 0;
-  padding: 16px;
+  margin: 12px auto 0;
+  padding: 14px 16px;
   border-radius: 12px;
   text-align: center;
   font-weight: 700;
@@ -1478,13 +1478,20 @@
           return response.json();
         })
         .then(function () {
-          submitBtn.textContent = 'Erfolgreich gesendet ✓';
+          var submitRow = submitBtn.closest('.cta-row');
+          if (submitRow) {
+            submitRow.style.display = 'none';
+          }
+
           showMessage('success', 'Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet.');
         })
         .catch(function (error) {
           console.error('EmailJS Fehler:', error);
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Jetzt Angebot anfordern';
+          var submitRow = submitBtn.closest('.cta-row');
+          if (submitRow) {
+            submitRow.style.display = 'none';
+          }
+
           showMessage('error', 'Fehler beim Senden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.');
         });
     });
