@@ -19,7 +19,7 @@
   --radius: 28px;
   --radius-sm: 18px;
   --widget-fit-width: calc(100vw - 24px);
-  --panel-fixed-height: 805px;
+  --panel-fixed-height: 822px;
   font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
   color: var(--text);
   width: min(100%, var(--widget-fit-width));
@@ -448,31 +448,32 @@
 
 #sterbegeld-widget .summary {
   display: grid;
-  grid-template-columns: 56px 1fr;
-  gap: 14px;
+  grid-template-columns: 45px 1fr;
+  gap: 11px;
   align-items: center;
   margin: 22px auto 0;
-  max-width: 560px;
-  padding: 16px 18px;
+  max-width: 448px;
+  padding: 13px 14px;
   border: 1px solid rgba(53, 78, 120, 0.28);
-  border-radius: 20px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.55);
 }
 
 #sterbegeld-widget .summary-copy {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
 #sterbegeld-widget .summary strong {
   flex: 0 0 auto;
   margin-bottom: 0;
-  font-size: 18px;
+  font-size: 14.4px;
 }
 
 #sterbegeld-widget .summary .subtext {
+  font-size: 12.8px;
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -603,13 +604,17 @@
   max-width: 640px;
   margin: 8px auto 0;
   color: #b00000;
-  font-size: 15px;
+  font-size: 11.25px;
   font-weight: 700;
   text-align: left;
 }
 
 #sterbegeld-widget .consent-error.active-error {
   display: block;
+}
+
+#sterbegeld-widget .consent-general-error {
+  margin-top: 4px;
 }
 
 #sterbegeld-widget .date-step,
@@ -1067,6 +1072,7 @@
               <span>Mit Bestätigung des Buttons "Jetzt Angebot anfordern" erklären Sie sich damit einverstanden, dass Sie der kostenlose Experte zur Beratung zu dem angefragten Produkt "Bestattungsvorsorge" kontaktieren darf. 100 % datenschutzkonforme Behandlung Ihrer Daten. Die eingegebenen Daten dürfen zu diesem Zweck gespeichert, verarbeitet und genutzt werden. Sie können das Einverständnis jederzeit widerrufen: per E-Mail an: anfrage@meinsterbegeldvergleich.de, unter 0681-4109520 oder per Post an Schuster GmbH, Betzenstraße 6, 66111 Saarbrücken*</span>
             </label>
             <div class="consent-error" id="sg-consent-error">Bitte bestätigen Sie Ihr Einverständnis.</div>
+            <div class="consent-error consent-general-error" id="sg-validation-error">Bitte füllen Sie alle Pflichtfelder korrekt aus.</div>
 
             <div class="cta-row">
               <button class="btn" type="button" id="sg-submit">Jetzt Angebot anfordern</button>
@@ -1144,6 +1150,7 @@
   var coverageSummary = root.querySelector('#sg-coverage');
   var submitBtn = root.querySelector('#sg-submit');
   var messageBox = root.querySelector('#sg-message');
+  var validationError = root.querySelector('#sg-validation-error');
 
   var dateFields = [
     {
@@ -1191,6 +1198,12 @@
 
     messageBox.className = 'form-message';
     messageBox.textContent = '';
+  }
+
+  function setValidationError(isActive) {
+    if (!validationError) return;
+
+    validationError.classList.toggle('active-error', isActive);
   }
 
   function showStep(stepNumber) {
@@ -1329,7 +1342,7 @@
     input.classList.toggle('is-invalid', isInvalid);
   }
 
-  function setConsentInvalid(isInvalid) {
+  function setConsentInvalid(isInvalid, message) {
     var consent = root.querySelector('#sg-consent');
     var consentError = root.querySelector('#sg-consent-error');
 
@@ -1339,6 +1352,7 @@
     }
 
     if (consentError) {
+      consentError.textContent = message || 'Bitte bestätigen Sie Ihr Einverständnis.';
       consentError.classList.toggle('active-error', isInvalid);
     }
   }
@@ -1452,9 +1466,21 @@
       var consentValid = validateConsent();
 
       if (!dateValid || !contactValid || !consentValid) {
-        showMessage('error', 'Bitte füllen Sie alle Pflichtfelder korrekt aus.');
+        var fieldsInvalid = !dateValid || !contactValid;
+
+        if (!consentValid && fieldsInvalid) {
+          setConsentInvalid(true, 'Bitte bestätigen Sie Ihr Einverständnis und füllen Sie alle Pflichtfelder korrekt aus.');
+          setValidationError(false);
+        } else if (fieldsInvalid) {
+          setValidationError(true);
+        } else {
+          setValidationError(false);
+        }
+
         return;
       }
+
+      setValidationError(false);
 
       var params = buildEmailParams();
 

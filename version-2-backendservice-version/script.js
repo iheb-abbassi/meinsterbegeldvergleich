@@ -26,6 +26,7 @@
   var coverageSummary = root.querySelector('#sg-coverage');
   var submitBtn = root.querySelector('#sg-submit');
   var messageBox = root.querySelector('#sg-message');
+  var validationError = root.querySelector('#sg-validation-error');
 
   var dateFields = [
     {
@@ -73,6 +74,12 @@
 
     messageBox.className = 'form-message';
     messageBox.textContent = '';
+  }
+
+  function setValidationError(isActive) {
+    if (!validationError) return;
+
+    validationError.classList.toggle('active-error', isActive);
   }
 
   function showStep(stepNumber) {
@@ -211,7 +218,7 @@
     input.classList.toggle('is-invalid', isInvalid);
   }
 
-  function setConsentInvalid(isInvalid) {
+  function setConsentInvalid(isInvalid, message) {
     var consent = root.querySelector('#sg-consent');
     var consentError = root.querySelector('#sg-consent-error');
 
@@ -221,6 +228,7 @@
     }
 
     if (consentError) {
+      consentError.textContent = message || 'Bitte bestätigen Sie Ihr Einverständnis.';
       consentError.classList.toggle('active-error', isInvalid);
     }
   }
@@ -334,9 +342,21 @@
       var consentValid = validateConsent();
 
       if (!dateValid || !contactValid || !consentValid) {
-        showMessage('error', 'Bitte füllen Sie alle Pflichtfelder korrekt aus.');
+        var fieldsInvalid = !dateValid || !contactValid;
+
+        if (!consentValid && fieldsInvalid) {
+          setConsentInvalid(true, 'Bitte bestätigen Sie Ihr Einverständnis und füllen Sie alle Pflichtfelder korrekt aus.');
+          setValidationError(false);
+        } else if (fieldsInvalid) {
+          setValidationError(true);
+        } else {
+          setValidationError(false);
+        }
+
         return;
       }
+
+      setValidationError(false);
 
       var params = buildEmailParams();
 
