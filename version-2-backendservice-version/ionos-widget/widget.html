@@ -19,7 +19,7 @@
   --radius: 28px;
   --radius-sm: 18px;
   --widget-fit-width: calc(100vw - 24px);
-  --panel-fixed-height: 760px;
+  --panel-fixed-height: 840px;
   font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif;
   color: var(--text);
   width: min(100%, var(--widget-fit-width));
@@ -153,10 +153,8 @@
 }
 
 #sterbegeld-widget .hero p,
-#sterbegeld-widget .note,
 #sterbegeld-widget .subtext,
 #sterbegeld-widget .legal,
-#sterbegeld-widget .fineprint,
 #sterbegeld-widget .mark span {
   color: var(--muted);
 }
@@ -479,33 +477,6 @@
   overflow-wrap: anywhere;
 }
 
-#sterbegeld-widget .features {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px 26px;
-  margin: 22px 0 10px;
-  font-weight: 700;
-}
-
-#sterbegeld-widget .feature {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#sterbegeld-widget .feature-dot {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 234, 0, 0.24);
-  border: 1px solid rgba(53, 78, 120, 0.18);
-  color: var(--text);
-}
-
 #sterbegeld-widget .footer {
   display: flex;
   flex: 0 0 auto;
@@ -534,13 +505,27 @@
   display: inline-block;
 }
 
+#sterbegeld-widget .required-footer-note {
+  display: none;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#sterbegeld-widget[data-current-step="3"] .required-footer-note,
+#sterbegeld-widget[data-current-step="4"] .required-footer-note {
+  display: block;
+}
+
 #sterbegeld-widget .marks {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
-  gap: 18px 24px;
+  gap: 18px;
   margin-left: auto;
-  width: min(100%, 560px);
+  width: min(100%, 720px);
   max-width: 100%;
 }
 
@@ -564,15 +549,17 @@
   display: block;
 }
 
+#sterbegeld-widget .footer-benefits {
+  min-width: 0;
+}
+
 #sterbegeld-widget .mark-icon {
   width: 48px;
   height: 48px;
   color: var(--text);
 }
 
-#sterbegeld-widget .legal,
-#sterbegeld-widget .fineprint,
-#sterbegeld-widget .note {
+#sterbegeld-widget .legal {
   line-height: 1.6;
   font-size: 15px;
   text-align: center;
@@ -623,10 +610,6 @@
 
 #sterbegeld-widget .consent-error.active-error {
   display: block;
-}
-
-#sterbegeld-widget .fineprint {
-  margin-top: 10px;
 }
 
 #sterbegeld-widget .date-step,
@@ -682,13 +665,6 @@
   font-size: 17px;
 }
 
-#sterbegeld-widget .date-step .note,
-#sterbegeld-widget .step-3 .note {
-  margin-top: 24px;
-  font-size: 16px;
-  color: rgba(53, 78, 120, 0.82);
-}
-
 #sterbegeld-widget[data-current-step="3"] .widget-shell {
   width: calc(100% - 16px);
   margin-inline: auto;
@@ -732,11 +708,6 @@
   min-width: 0;
   padding-inline: clamp(6px, 2vw, 12px);
   font-size: clamp(14px, 3.8vw, 17px);
-}
-
-#sterbegeld-widget[data-current-step="3"] .note {
-  max-width: 100%;
-  overflow-wrap: normal;
 }
 
 #sterbegeld-widget .form-message {
@@ -869,10 +840,6 @@
 
   #sterbegeld-widget[data-current-step="3"] .cta-row {
     margin-top: 18px;
-  }
-
-  #sterbegeld-widget[data-current-step="3"] .note {
-    margin-top: 14px;
   }
 
   #sterbegeld-widget[data-current-step="3"] .footer {
@@ -1039,8 +1006,6 @@
             <div class="cta-row">
               <a class="btn" href="#sg-view-4">Weiter</a>
             </div>
-
-            <div class="note">Alle mit * gekennzeichneten Felder sind Pflichtfelder</div>
           </div>
         </div>
 
@@ -1109,12 +1074,6 @@
 
             <div class="form-message" id="sg-message"></div>
 
-            <div class="features">
-              <div class="feature"><span class="feature-dot">✓</span><span>Kostenlos und ohne Druck</span></div>
-              <div class="feature"><span class="feature-dot">✓</span><span>Daten auf Wunsch wieder löschbar</span></div>
-            </div>
-
-            <div class="fineprint">Alle mit * gekennzeichneten Felder sind Pflichtfelder</div>
           </div>
         </div>
       </div>
@@ -1124,6 +1083,7 @@
           <a class="back back-nav back-2" href="#sg-view-1">← Zurück</a>
           <a class="back back-nav back-3" href="#sg-view-2">← Zurück</a>
           <a class="back back-nav back-4" href="#sg-view-3">← Zurück</a>
+          <div class="required-footer-note">Alle mit * gekennzeichneten Felder sind Pflichtfelder</div>
         </div>
 
         <div class="marks">
@@ -1141,6 +1101,13 @@
               <path d="M24 28v4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path>
             </svg>
             <div><strong>SSL</strong><span>Verschlüsselte Datenübertragung</span></div>
+          </div>
+          <div class="mark">
+            <svg class="mark-icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <circle cx="24" cy="24" r="18" fill="rgba(255, 234, 0, 0.24)" stroke="currentColor" stroke-width="2"></circle>
+              <path d="M16 24.5l5.2 5.2L32.5 18.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <div class="footer-benefits"><strong>Kostenlos und ohne Druck</strong><span>Daten auf Wunsch wieder löschbar</span></div>
           </div>
         </div>
       </div>
